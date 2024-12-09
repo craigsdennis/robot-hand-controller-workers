@@ -47,20 +47,28 @@ async function sendCommand(actionNumber) {
 // Function to run a scene
 function runScene(audioId, actionNumber) {
     const audioElement = document.getElementById(`audio-${audioId}`);
-    if (!audioElement) {
-        console.error("Audio element not found");
+    const delayInput = document.getElementById(`delay-${audioId}`);
+
+    if (!audioElement || !delayInput) {
+        console.error("Audio element or delay input not found");
         return;
     }
 
-    // Play audio
-    audioElement.play().then(() => {
-        console.log("Playing audio...");
-        // After the audio starts, trigger the action
-        sendCommand(actionNumber);
-    }).catch(error => {
-        console.error("Error playing audio:", error);
-        alert("Error playing audio. Please try again.");
-    });
+    const delay = parseInt(delayInput.value, 10) || 0; // Default to 0 if input is invalid
+    console.log(`Starting scene with a delay of ${delay}ms`);
+
+    // Trigger robot hand action immediately
+    sendCommand(actionNumber);
+
+    // Delay the audio playback
+    setTimeout(() => {
+        audioElement.play().then(() => {
+            console.log("Playing audio...");
+        }).catch(error => {
+            console.error("Error playing audio:", error);
+            alert("Error playing audio. Please try again.");
+        });
+    }, delay);
 }
 
 // Attach event listener for the "Connect" button

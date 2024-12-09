@@ -30,6 +30,19 @@
             background-color: #1e1e1e;
             border-radius: 8px;
         }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="number"] {
+            width: 100px;
+            padding: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #555;
+            border-radius: 4px;
+            background-color: #1e1e1e;
+            color: #ffffff;
+        }
         button {
             background-color: #0070f3;
             color: #ffffff;
@@ -60,26 +73,32 @@
         <h2>Scenes</h2>
         <div class="scene">
             <h3>Brought to you by Cloudflare</h3>
+            <label for="delay-cloudflare">Audio Delay (ms):</label>
+            <input type="number" id="delay-cloudflare" value="0" />
             <audio id="audio-cloudflare" src="/audio/brought-to-you-by-cloudflare.mp3" controls></audio>
             <button onclick="runScene('cloudflare', 8)">Run Scene</button>
         </div>
-		<div class="scene">
+        <div class="scene">
             <h3>Co-host</h3>
+            <label for="delay-cohost">Audio Delay (ms):</label>
+            <input type="number" id="delay-cohost" value="200" />
             <audio id="audio-cohost" src="/audio/cohost.mp3" controls></audio>
             <button onclick="runScene('cohost', 9)">Run Scene</button>
         </div>
-		<div class="scene">
+        <div class="scene">
             <h3>Wait? What?!!</h3>
+            <label for="delay-wait-what">Audio Delay (ms):</label>
+            <input type="number" id="delay-wait-what" value="500" />
             <audio id="audio-wait-what" src="/audio/wait-what.mp3" controls></audio>
             <button onclick="runScene('wait-what', 10)">Run Scene</button>
         </div>
-		<div class="scene">
+        <div class="scene">
             <h3>CO-HOST</h3>
+            <label for="delay-cohost-2">Audio Delay (ms):</label>
+            <input type="number" id="delay-cohost-2" value="100" />
             <audio id="audio-cohost-2" src="/audio/cohost-2.mp3" controls></audio>
             <button onclick="runScene('cohost-2', 11)">Run Scene</button>
         </div>
-
-
     </main>
     <script src="app.js"></script>
 </body>
