@@ -3,26 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Micro:bit BLE Controller</title>
+    <title>Yorick Controller</title>
     <style>
         body {
+            background-color: #121212;
+            color: #ffffff;
             font-family: Arial, sans-serif;
-            text-align: center;
             margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #1e1e1e;
+            padding: 20px;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+        }
+        main {
             padding: 20px;
         }
+        .scene {
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 1px solid #333;
+            background-color: #1e1e1e;
+            border-radius: 8px;
+        }
         button {
+            background-color: #0070f3;
+            color: #ffffff;
+            border: none;
             padding: 10px 20px;
             font-size: 16px;
-            margin: 10px;
+            border-radius: 4px;
             cursor: pointer;
+        }
+        button:hover {
+            background-color: #005bb5;
+        }
+        audio {
+            margin-top: 10px;
+        }
+        #connect-button {
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
-    <h1>Micro:bit BLE Controller</h1>
-    <button id="connect">Connect to Micro:bit</button>
-    <button id="action9" disabled>Send Action 9</button>
+    <header>
+        <h1>Yorick: The Robot Hand</h1>
+    </header>
+    <main>
+        <button id="connect-button">Connect to Yorick</button>
+
+        <h2>Scenes</h2>
+        <div class="scene">
+            <h3>Brought to you by Cloudflare</h3>
+            <audio id="audio-cloudflare" src="/audio/brought-to-you-by-cloudflare.mp3" controls></audio>
+            <button onclick="runScene('cloudflare', 8)">Run Scene</button>
+        </div>
+		<div class="scene">
+            <h3>Co-host</h3>
+            <audio id="audio-cohost" src="/audio/cohost.mp3" controls></audio>
+            <button onclick="runScene('cohost', 9)">Run Scene</button>
+        </div>
+		<div class="scene">
+            <h3>Wait? What?!!</h3>
+            <audio id="audio-wait-what" src="/audio/wait-what.mp3" controls></audio>
+            <button onclick="runScene('wait-what', 10)">Run Scene</button>
+        </div>
+		<div class="scene">
+            <h3>CO-HOST</h3>
+            <audio id="audio-cohost-2" src="/audio/cohost-2.mp3" controls></audio>
+            <button onclick="runScene('cohost-2', 11)">Run Scene</button>
+        </div>
+
+
+    </main>
     <script src="app.js"></script>
 </body>
 </html>

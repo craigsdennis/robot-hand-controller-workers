@@ -1,65 +1,67 @@
 let bluetoothDevice;
-let uartCharacteristic;
+let uartService;
+const UART_SERVICE_UUID = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
+const UART_TX_UUID = "6e400003-b5a3-f393-e0a9-e50e24dcca9e"; // Correct TX characteristic
 
-const CMD_ACTION_9 = "CMD|0F|09|$"; // Command for action 9
-
-// Button references
-const connectButton = document.getElementById("connect");
-const action9Button = document.getElementById("action9");
-
-// Function to connect to the micro:bit
+// Function to connect to micro:bit
 async function connectToMicrobit() {
     try {
-        // Request the Bluetooth device
         bluetoothDevice = await navigator.bluetooth.requestDevice({
-            acceptAllDevices: true,
-            optionalServices: ["6e400001-b5a3-f393-e0a9-e50e24dcca9e"], // UART service UUID
+            filters: [{ namePrefix: "BBC" }], // Filter for devices with names starting with "BBC"
+            optionalServices: [UART_SERVICE_UUID],
         });
 
-        // Connect to the GATT server
         const server = await bluetoothDevice.gatt.connect();
-
-        // Get the UART service
-        const service = await server.getPrimaryService("6e400001-b5a3-f393-e0a9-e50e24dcca9e");
-
-        // Get the TX characteristic (WriteWithoutResponse)
-		const TX = "6e400003-b5a3-f393-e0a9-e50e24dcca9e";
-
-        uartCharacteristic = await service.getCharacteristic(TX);
-
-        // Verify that the characteristic supports writeWithoutResponse
-        if (!uartCharacteristic.properties.writeWithoutResponse) {
-            throw new Error("TX characteristic does not support writeWithoutResponse.");
-        }
-
-        // Enable the action button
-        action9Button.disabled = false;
+        const service = await server.getPrimaryService(UART_SERVICE_UUID);
+        uartService = await service.getCharacteristic(UART_TX_UUID);
 
         console.log("Connected to micro:bit!");
+        alert("Connected to Yorick!");
     } catch (error) {
         console.error("Failed to connect to micro:bit:", error);
+        alert("Failed to connect to Yorick. Please try again.");
     }
 }
 
-// Function to send a command
-async function sendCommand(command) {
-    if (!uartCharacteristic) {
-        console.error("Not connected to a micro:bit");
+// Function to send a command to the micro:bit
+async function sendCommand(actionNumber) {
+    if (!uartService) {
+        console.error("Not connected to micro:bit");
+        alert("Please connect to Yorick first!");
         return;
     }
 
-    const encoder = new TextEncoder();
-    const commandBuffer = encoder.encode(command);
-
     try {
-        // Send the command using writeWithoutResponse
-        await uartCharacteristic.writeValueWithoutResponse(commandBuffer);
-        console.log("Command sent:", command);
+        // Convert action number to hex and pad to two characters
+        const hexAction = actionNumber.toString(16).toUpperCase().padStart(2, "0");
+        const command = `CMD|0F|${hexAction}|$`;
+        const encoder = new TextEncoder();
+        await uartService.writeValue(encoder.encode(command));
+        console.log(`Command sent: ${command}`);
     } catch (error) {
         console.error("Failed to send command:", error);
+        alert("Failed to send command to Yorick.");
     }
 }
 
-// Event listeners for buttons
-connectButton.addEventListener("click", connectToMicrobit);
-action9Button.addEventListener("click", () => sendCommand(CMD_ACTION_9));
+// Function to run a scene
+function runScene(audioId, actionNumber) {
+    const audioElement = document.getElementById(`audio-${audioId}`);
+    if (!audioElement) {
+        console.error("Audio element not found");
+        return;
+    }
+
+    // Play audio
+    audioElement.play().then(() => {
+        console.log("Playing audio...");
+        // After the audio starts, trigger the action
+        sendCommand(actionNumber);
+    }).catch(error => {
+        console.error("Error playing audio:", error);
+        alert("Error playing audio. Please try again.");
+    });
+}
+
+// Attach event listener for the "Connect" button
+document.getElementById("connect-button").addEventListener("click", connectToMicrobit);
