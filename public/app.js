@@ -49,8 +49,8 @@ function runScene(audioId, actionNumber) {
     const audioElement = document.getElementById(`audio-${audioId}`);
     const delayInput = document.getElementById(`delay-${audioId}`);
 
-    if (!audioElement || !delayInput) {
-        console.error("Audio element or delay input not found");
+    if (!delayInput) {
+        console.error("Delay input not found");
         return;
     }
 
@@ -60,15 +60,19 @@ function runScene(audioId, actionNumber) {
     // Trigger robot hand action immediately
     sendCommand(actionNumber);
 
-    // Delay the audio playback
-    setTimeout(() => {
-        audioElement.play().then(() => {
-            console.log("Playing audio...");
-        }).catch(error => {
-            console.error("Error playing audio:", error);
-            alert("Error playing audio. Please try again.");
-        });
-    }, delay);
+    // Delay the audio playback if an audio element exists
+    if (audioElement) {
+        setTimeout(() => {
+            audioElement.play().then(() => {
+                console.log("Playing audio...");
+            }).catch(error => {
+                console.error("Error playing audio:", error);
+                alert("Error playing audio. Please try again.");
+            });
+        }, delay);
+    } else {
+        console.log("No audio element for this scene.");
+    }
 }
 
 // Attach event listener for the "Connect" button
